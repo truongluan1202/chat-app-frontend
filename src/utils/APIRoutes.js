@@ -1,4 +1,4 @@
-export const host = "https://chattie-meow-meow-d30f322c541b.herokuapp.com/";
+export const host = "https://chattie-meow-meow-d30f322c541b.herokuapp.com";
 // export const host = "http://localhost:5000";
 
 export const registerRoute = `${host}/api/auth/register`;
