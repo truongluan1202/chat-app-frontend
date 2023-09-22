@@ -56,7 +56,6 @@ function Room() {
             `${allRoomsRoute}/${currentUser.username}`
           );
           setRooms(data.data);
-          console.log(data.data);
         } else {
           navigate("/setAvatar");
         }

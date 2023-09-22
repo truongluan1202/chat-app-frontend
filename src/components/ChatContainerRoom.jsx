@@ -10,20 +10,31 @@ import {
 } from "../utils/APIRoutes";
 import { useState } from "react";
 import { useEffect } from "react";
-// import { useRef } from "react";
-// import { v4 as uuidv4 } from "uuid";
+import { useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button, Tooltip, Avatar, Form, Input, Alert } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import Message from "./MessagesRoom";
 import { AppContext } from "../Context/AppProvider";
 
+/*
+  messages : 
+  {
+    _id, 
+    message, 
+    createdAt,
+    photoURL,
+    displayName
+  }
+*/
+
 export default function ChatContainerRoom({ currentUser, socket }) {
   const [messages, setMessages] = useState([]);
-  // const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [arrivalMessage, setArrivalMessage] = useState(null);
   // const [members, setMembers] = useState([]);
 
-  //   const scrollRef = useRef();
+  const scrollRef = useRef();
   const { setIsInviteMemberVisible, currentChat, setMembers, members } =
     useContext(AppContext);
 
@@ -55,7 +66,7 @@ export default function ChatContainerRoom({ currentUser, socket }) {
   );
 
   const handleSendMsg = async (msg) => {
-    await axios.post(sendMessageRoute, {
+    const data = await axios.post(sendMessageRoute, {
       from: currentUser._id,
       to: currentChat._id,
       message: msg,
@@ -63,31 +74,33 @@ export default function ChatContainerRoom({ currentUser, socket }) {
       senderPhotoURL: currentUser.avatarImage,
     });
 
-    // socket.current.emit("send-msg", {
-    //   to: currentChat._id,
-    //   from: currentUser._id,
-    //   message: msg,
-    // });
+    const newMsg = data.data;
+
+    socket.current.emit("send-msg-to-group", {
+      roomId: currentChat._id,
+      newMsg: newMsg,
+    });
+
     // const msgs = [...messages];
-    // msgs.push(data);
+    // msgs.push(newMsg);
     // setMessages(msgs);
   };
 
-  //   useEffect(() => {
-  //     if (socket.current) {
-  //       socket.current.on("msg-receive", (msg) => {
-  //         setArrivalMessage({ fromSelf: false, message: msg });
-  //       });
-  //     }
-  //   }, []);
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("msg-receive", (newMsg) => {
+        setArrivalMessage(newMsg);
+      });
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
-  // }, [arrivalMessage]);
+  useEffect(() => {
+    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage]);
 
-  //   useEffect(() => {
-  //     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  //   }, [messages]);
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <Container>
@@ -120,13 +133,15 @@ export default function ChatContainerRoom({ currentUser, socket }) {
       <ContentStyled>
         <MessageListStyled>
           {messages.map((mes) => (
-            <Message
-              key={mes.id}
-              text={mes.message}
-              photoURL={mes.photoURL}
-              displayName={mes.displayName}
-              createdAt={mes.createdAt}
-            />
+            <div ref={scrollRef} key={uuidv4}>
+              <Message
+                key={mes.id}
+                text={mes.message}
+                photoURL={mes.photoURL}
+                displayName={mes.displayName}
+                createdAt={mes.createdAt}
+              />
+            </div>
           ))}
         </MessageListStyled>
         <ChatInput handleSendMsg={handleSendMsg} />
