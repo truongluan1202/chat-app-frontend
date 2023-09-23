@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { Button, Tooltip, Avatar, Form, Input, Alert } from "antd";
+import { Button, Tooltip, Avatar, message } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import Message from "./MessagesRoom";
 import { AppContext } from "../Context/AppProvider";
@@ -62,7 +62,7 @@ export default function ChatContainerRoom({ currentUser, socket }) {
       }
       if (currentChat) fetchData();
     },
-    [currentChat, currentUser]
+    [currentChat]
   );
 
   const handleSendMsg = async (msg) => {
@@ -112,14 +112,14 @@ export default function ChatContainerRoom({ currentUser, socket }) {
         <ButtonGroupStyled>
           <Button
             icon={<UserAddOutlined />}
-            type="text"
+            type="link"
             onClick={() => setIsInviteMemberVisible(true)}
           >
             Invite
           </Button>
-          <Avatar.Group size="small" maxCount={2}>
+          <Avatar.Group size="large" maxCount={2}>
             {members.map((member, index) => (
-              <Tooltip title={member.username} key={member.index}>
+              <Tooltip title={member.username} key={index}>
                 <Avatar src={`data:image/svg+xml;base64,${member.avatarImage}`}>
                   {member.avatarImage
                     ? ""
@@ -130,28 +130,26 @@ export default function ChatContainerRoom({ currentUser, socket }) {
           </Avatar.Group>
         </ButtonGroupStyled>
       </HeaderStyled>
-      <ContentStyled>
-        <MessageListStyled>
-          {messages.map((mes) => (
-            <div ref={scrollRef} key={uuidv4}>
-              <Message
-                key={mes.id}
-                text={mes.message}
-                photoURL={mes.photoURL}
-                displayName={mes.displayName}
-                createdAt={mes.createdAt}
-              />
-            </div>
-          ))}
-        </MessageListStyled>
-        <ChatInput handleSendMsg={handleSendMsg} />
-      </ContentStyled>
+      <MessageListStyled>
+        {messages.map((mes, index) => (
+          <div ref={scrollRef} key={index}>
+            <Message
+              text={mes.message}
+              photoURL={mes.photoURL}
+              displayName={mes.displayName}
+              createdAt={mes.createdAt}
+              currentName={currentUser.username}
+            />
+          </div>
+        ))}
+      </MessageListStyled>
+      <ChatInput handleSendMsg={handleSendMsg} />
     </Container>
   );
 }
 
 const Container = styled.div`
-  background-color: white;
+  color: white;
   padding-top: 1rem;
   display: grid;
   grid-template-rows: 10% 80% 10%;
@@ -160,78 +158,16 @@ const Container = styled.div`
   @media screen and (min-width: 720px) and (max-width: 1080px) {
     grid-template-rows: 15% 70% 15%;
   }
-  .chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
-    .user-details {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      .avatar {
-        img {
-          height: 3rem;
-        }
-      }
-      .username {
-        h3 {
-          color: white;
-        }
-      }
-    }
-  }
-  .chat-messages {
-    padding: 1rem 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    overflow: auto;
-    &::-webkit-scrollbar {
-      width: 0.2rem;
-      &-thumb {
-        background-color: #ffffff39;
-        width: 0.1rem;
-        border-radius: 1rem;
-      }
-    }
-    .message {
-      display: flex;
-      align-items: center;
-      .content {
-        max-width: 40%;
-        overflow-wrap: break-word;
-        padding: 1rem;
-        font-size: 1.1rem;
-        border-radius: 1rem;
-        color: #d1d1d1;
-        @media screen and (min-width: 720px) and (max-width: 1080px) {
-          max-width: 70%;
-        }
-      }
-    }
-    .sended {
-      justify-content: flex-end;
-      .content {
-        background-color: #4f04ff21;
-      }
-    }
-    .received {
-      justify-content: flex-start;
-      .content {
-        background-color: #9900ff20;
-      }
-    }
-  }
 `;
 
 const HeaderStyled = styled.div`
   display: flex;
   justify-content: space-between;
   height: 56px;
-  padding: 0 16px;
+  padding: 2.3rem 1rem;
   align-items: center;
   border-bottom: 1px solid rgb(230, 230, 230);
+  font-size: 1.3rem;
 
   .header {
     &__info {
@@ -246,7 +182,8 @@ const HeaderStyled = styled.div`
     }
 
     &__description {
-      font-size: 12px;
+      font-size: 1rem;
+      color: #a7a7a7;
     }
   }
 `;
@@ -254,17 +191,39 @@ const HeaderStyled = styled.div`
 const ButtonGroupStyled = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const ContentStyled = styled.div`
-  height: calc(100% - 56px);
-  display: flex;
-  flex-direction: column;
-  padding: 11px;
-  justify-content: flex-end;
+  Button {
+    color: white;
+    font-size: 1rem;
+  }
 `;
 
 const MessageListStyled = styled.div`
-  max-height: 100%;
-  overflow-y: auto;
+  margin-top: 0.8rem;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 0.2rem;
+    &-thumb {
+      background-color: #ffffff39;
+      width: 0.1rem;
+      border-radius: 1rem;
+    }
+  }
+  .sended {
+    display: flex;
+    justify-content: flex-end;
+    .content {
+      background-color: #4f04ff21;
+    }
+  }
+  .received {
+    display: flex;
+    justify-content: flex-start;
+    .content {
+      background-color: #9900ff20;
+    }
+  }
 `;

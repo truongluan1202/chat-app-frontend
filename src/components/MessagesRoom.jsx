@@ -3,25 +3,6 @@ import { Avatar, Typography } from "antd";
 import styled from "styled-components";
 import { formatRelative, parseISO } from "date-fns/esm";
 
-const WrapperStyled = styled.div`
-  margin-bottom: 10px;
-
-  .author {
-    margin-left: 5px;
-    font-weight: bold;
-  }
-
-  .date {
-    margin-left: 10px;
-    font-size: 11px;
-    color: #a7a7a7;
-  }
-
-  .content {
-    margin-left: 30px;
-  }
-`;
-
 function formatDate(timestamp) {
   let formattedDate = "";
 
@@ -40,21 +21,87 @@ function formatDate(timestamp) {
   return formattedDate;
 }
 
-export default function Message({ text, displayName, createdAt, photoURL }) {
+export default function Message({
+  text,
+  displayName,
+  createdAt,
+  photoURL,
+  currentName,
+}) {
   return (
-    <WrapperStyled>
-      <div>
-        <Avatar size="small" src={`data:image/svg+xml;base64,${photoURL}`}>
-          {photoURL ? "" : displayName?.charAt(0)?.toUpperCase()}
-        </Avatar>
-        <Typography.Text className="author">{displayName}</Typography.Text>
-        <Typography.Text className="date">
+    <WrapperStyled
+      className={`${displayName === currentName ? "sended" : "received"}`}
+    >
+      {displayName !== currentName && (
+        <div className="avatar">
+          <Avatar size="large" src={`data:image/svg+xml;base64,${photoURL}`}>
+            {photoURL ? "" : displayName?.charAt(0)?.toUpperCase()}
+          </Avatar>
+        </div>
+      )}
+      <div className="message">
+        <Typography.Text
+          className={`author ${
+            displayName === currentName ? "sended" : "received"
+          }`}
+        >
+          {displayName}
+        </Typography.Text>
+        <Typography.Text className="content">{text}</Typography.Text>
+        <Typography.Text
+          className={`date ${
+            displayName === currentName ? "sended" : "received"
+          }`}
+        >
           {formatDate(createdAt)}
         </Typography.Text>
       </div>
-      <div>
-        <Typography.Text className="content">{text}</Typography.Text>
-      </div>
+      {displayName === currentName && (
+        <div className="avatar">
+          <Avatar size="large" src={`data:image/svg+xml;base64,${photoURL}`}>
+            {photoURL ? "" : displayName?.charAt(0)?.toUpperCase()}
+          </Avatar>
+        </div>
+      )}
     </WrapperStyled>
   );
 }
+
+const WrapperStyled = styled.div`
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+
+  .avatar {
+    padding-top: 3rem;
+  }
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    gap: 0.5rem;
+    max-width: 70%;
+
+    .author {
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      padding: 0.6rem;
+      font-size: 1.1rem;
+      border-radius: 1rem;
+      color: #d1d1d1;
+    }
+    .date {
+      font-size: 1rem;
+      color: #a7a7a7;
+    }
+  }
+`;

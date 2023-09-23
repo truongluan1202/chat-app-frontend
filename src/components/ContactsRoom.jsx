@@ -48,7 +48,9 @@ export default function ContactsRoom({ rooms }) {
               <PanelStyled header="Room List" key="1" className="contacts">
                 {rooms.map((room, index) => (
                   <LinkStyled
-                    className="contact"
+                    className={`contact ${
+                      index === currentSelected ? "selected" : ""
+                    }`}
                     key={room._id}
                     onClick={() => changeCurrentChat(index, room)}
                   >
@@ -128,7 +130,6 @@ const Container = styled.div`
       background-color: #ffffff34;
       min-height: 5rem;
       cursor: pointer;
-      width: 100%;
       border-radius: 0.2rem;
       padding: 0.4rem;
       display: flex;
@@ -145,6 +146,7 @@ const Container = styled.div`
           width: 100%;
           color: white;
           font-size: 0.8rem;
+          font-weight: bold;
         }
       }
     }
@@ -186,10 +188,13 @@ const PanelStyled = styled(Panel)`
     .ant-collapse-header,
     p {
       color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      align-items: center;
     }
 
     .ant-collapse-content-box {
-      width: 16rem;
+      width: 20rem;
       padding: 0 40px;
     }
 
