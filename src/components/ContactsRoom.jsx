@@ -10,12 +10,13 @@ import { AppContext } from "../Context/AppProvider";
 
 const { Panel } = Collapse;
 
-export default function ContactsRoom({ rooms }) {
+export default function ContactsRoom({ rooms, socket }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
 
-  const { setIsAddRoomVisible, setCurrentChat } = React.useContext(AppContext);
+  const { setIsAddRoomVisible, setCurrentChat, currentChat } =
+    React.useContext(AppContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +28,10 @@ export default function ContactsRoom({ rooms }) {
   }, []);
 
   const changeCurrentChat = (index, room) => {
+    if (currentChat) {
+      socket.current.emit("leave-room", currentChat._id);
+    }
+    socket.current.emit("join-room", room._id);
     setCurrentSelected(index);
     setCurrentChat(room);
   };
@@ -113,9 +118,9 @@ const Container = styled.div`
   }
   .contacts {
     display: flex;
+    overflow-x: hidden;
     flex-direction: column;
     align-items: center;
-    overflow: auto;
     gap: 0.8rem;
     &::-webkit-scrollbar {
       width: 0.2rem;

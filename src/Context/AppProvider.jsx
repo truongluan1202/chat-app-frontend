@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 export const AppContext = React.createContext();
 
@@ -8,6 +8,7 @@ export default function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(undefined);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [members, setMembers] = useState([]);
+  const socket = useRef();
 
   return (
     <AppContext.Provider
@@ -22,6 +23,7 @@ export default function AppProvider({ children }) {
         setCurrentChat,
         members,
         setMembers,
+        socket,
       }}
     >
       {children}

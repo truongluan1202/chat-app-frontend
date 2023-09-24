@@ -76,7 +76,12 @@ export default function ChatContainerRoom({ currentUser, socket }) {
 
     const newMsg = data.data;
 
-    socket.current.emit("send-msg-to-group", {
+    // socket.current.emit("send-msg-to-group", {
+    //   roomId: currentChat._id,
+    //   newMsg: newMsg,
+    // });
+
+    socket.current.emit("send-message", {
       roomId: currentChat._id,
       newMsg: newMsg,
     });
@@ -86,12 +91,38 @@ export default function ChatContainerRoom({ currentUser, socket }) {
     // setMessages(msgs);
   };
 
+  // useEffect(() => {
+  //   if (socket.current) {
+  //     socket.current.on("msg-receive", (newMsg) => {
+  //       setArrivalMessage(newMsg);
+  //     });
+  //   }
+  // }, []);
+
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msg-receive", (newMsg) => {
-        setArrivalMessage(newMsg);
-      });
-    }
+    if (!socket.current) return;
+
+    // Set up event listeners when the component mounts
+    socket.current.on("message", (newMsg) => {
+      setArrivalMessage(newMsg);
+    });
+
+    // socket.current.on('user-left', (leftUsername) => {
+    // setMessages((prev) => [
+    //   ...prev,
+    //   {
+    //     sender: 'System',
+    //     message: `${leftUsername} has left the room.`,
+    //   },
+    // ]);
+    // setMembers((prevParticipants) =>
+    //   prevParticipants.filter((participant) => participant !== leftUsername)
+    // );
+
+    // Clean up event listeners when the component unmounts
+    return () => {
+      socket.current.off("message");
+    };
   }, []);
 
   useEffect(() => {
@@ -163,7 +194,7 @@ const Container = styled.div`
 const HeaderStyled = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 56px;
+  height: 100%;
   padding: 2.3rem 1rem;
   align-items: center;
   border-bottom: 1px solid rgb(230, 230, 230);
@@ -198,7 +229,7 @@ const ButtonGroupStyled = styled.div`
 `;
 
 const MessageListStyled = styled.div`
-  margin-top: 0.8rem;
+  margin-top: 1.5rem;
   padding: 1rem 2rem;
   display: flex;
   flex-direction: column;

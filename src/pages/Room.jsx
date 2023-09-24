@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { allRoomsRoute, host } from "../utils/APIRoutes";
@@ -26,12 +26,12 @@ database
 */
 
 function Room() {
-  const socket = useRef();
   const navigate = useNavigate();
   // const [currentUser, setCurrentUser] = useState(undefined);
   const [rooms, setRooms] = useState([]);
   // const [currentChat, setCurrentChat] = useState(undefined);
-  const { currentUser, setCurrentUser, currentChat } = useContext(AppContext);
+  const { currentUser, setCurrentUser, currentChat, socket } =
+    useContext(AppContext);
 
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user")) {
@@ -45,6 +45,7 @@ function Room() {
     if (currentUser) {
       socket.current = io(host);
       socket.current.emit("add-user", currentUser._id);
+      socket.current.emit("set-username", currentUser.username);
     }
   }, [currentUser]);
 
@@ -68,7 +69,7 @@ function Room() {
     <>
       <Container>
         <div className="container">
-          <ContactsRoom rooms={rooms} />
+          <ContactsRoom rooms={rooms} socket={socket} />
           {currentChat === undefined ? (
             <Welcome />
           ) : (

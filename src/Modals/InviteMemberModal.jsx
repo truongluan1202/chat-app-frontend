@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Form, Modal, Select, Spin, Avatar } from "antd";
+import { Form, Modal, Select, Avatar } from "antd";
 import { AppContext } from "../Context/AppProvider";
 import {
   addMembersRoute,
@@ -7,6 +7,7 @@ import {
   allUsersRoute,
 } from "../utils/APIRoutes";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 function DebounceSelect({ currentUser, addedUsers, ...props }) {
   const [options, setOptions] = useState([]);
@@ -25,7 +26,11 @@ function DebounceSelect({ currentUser, addedUsers, ...props }) {
     <>
       <Select labelInValue style={{ width: "100%" }} {...props}>
         {options.map((opt) => (
-          <Select.Option key={opt._id} value={opt.value} title={opt.username}>
+          <Select.Option
+            key={opt._id}
+            value={opt.username}
+            title={opt.username}
+          >
             <Avatar
               size="small"
               src={`data:image/svg+xml;base64,${opt.avatarImage}`}
@@ -47,6 +52,7 @@ export default function InviteMemberModal() {
     currentUser,
     currentChat,
     members,
+    socket,
   } = useContext(AppContext);
   const [form] = Form.useForm();
   const [value, setValue] = useState([]);
@@ -59,10 +65,12 @@ export default function InviteMemberModal() {
       newUsers: newUsers,
     });
 
+    // socket.current.emit("add-member", currentChat._id);
     form.resetFields();
     setValue([]);
 
     setIsInviteMemberVisible(false);
+    window.location.reload();
   };
 
   const handleCancel = () => {
@@ -86,9 +94,9 @@ export default function InviteMemberModal() {
           <DebounceSelect
             mode="multiple"
             name="search-user"
-            label="Tên các thành viên"
+            label="Member List"
             value={value}
-            placeholder="Nhập tên thành viên"
+            placeholder="Type name of member"
             onChange={(newValue) => setValue(newValue)}
             style={{ width: "100%" }}
             currentUser={currentUser}

@@ -73,7 +73,7 @@ const WrapperStyled = styled.div`
   flex-direction: row;
 
   .avatar {
-    padding-top: 3rem;
+    padding-top: 3.5rem;
   }
 
   .message {

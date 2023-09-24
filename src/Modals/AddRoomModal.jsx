@@ -7,19 +7,22 @@ import { createRoomRoute } from "../utils/APIRoutes";
 export default function AddRoomModal() {
   const { isAddRoomVisible, setIsAddRoomVisible, currentUser } =
     useContext(AppContext);
+
   const [form] = Form.useForm();
 
   const handleOk = async () => {
     try {
       const { data } = await axios.post(createRoomRoute, {
-        roomName: form.getFieldValue().name,
+        roomName: form.getFieldValue().name.trim(),
         users: [currentUser.username],
         description: form.getFieldValue().description,
       });
 
       form.resetFields();
       setIsAddRoomVisible(false);
+      window.location.reload();
     } catch (err) {
+      alert("Room Name has been used");
       console.log("Error creating room:", err);
     }
   };
@@ -32,7 +35,7 @@ export default function AddRoomModal() {
   };
 
   return (
-    <div>
+    <>
       <Modal
         title="Create Room"
         open={isAddRoomVisible}
@@ -48,6 +51,6 @@ export default function AddRoomModal() {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 }
