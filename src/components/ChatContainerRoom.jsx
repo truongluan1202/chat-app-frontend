@@ -159,6 +159,7 @@ export default function ChatContainerRoom({ currentUser, socket }) {
               </Tooltip>
             ))}
           </Avatar.Group>
+          <Logout />
         </ButtonGroupStyled>
       </HeaderStyled>
       <MessageListStyled>
@@ -221,6 +222,7 @@ const HeaderStyled = styled.div`
 
 const ButtonGroupStyled = styled.div`
   display: flex;
+  gap: 1.5rem;
   align-items: center;
   Button {
     color: white;
