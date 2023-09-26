@@ -90,6 +90,7 @@ const Container = styled.div`
     }
   }
   .contacts {
+    padding-top: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -113,7 +114,7 @@ const Container = styled.div`
       display: flex;
       gap: 1rem;
       align-items: center;
-      transition: 0.5s ease-in-out;
+      transition: 0.3s ease-in-out;
       .avatar {
         img {
           height: 3rem;
@@ -123,6 +124,9 @@ const Container = styled.div`
         h3 {
           color: white;
         }
+      }
+      &:hover {
+        box-shadow: 0 0 1rem rgba(255, 255, 255, 0.7);
       }
     }
     .selected {

@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { Button, Tooltip, Avatar, message } from "antd";
+import { Button, Tooltip, Avatar, message, Spin } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import Message from "./MessagesRoom";
 import { AppContext } from "../Context/AppProvider";
@@ -33,6 +33,7 @@ export default function ChatContainerRoom({ currentUser, socket }) {
   const [messages, setMessages] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   // const [members, setMembers] = useState([]);
+  const [isLoadingMessage, setIsLoadingMessage] = useState(false);
 
   const scrollRef = useRef();
   const { setIsInviteMemberVisible, currentChat, setMembers, members } =
@@ -41,11 +42,13 @@ export default function ChatContainerRoom({ currentUser, socket }) {
   useEffect(
     function () {
       async function fetchData() {
+        setIsLoadingMessage(true);
         const response = await axios.post(getAllMessagesRoomRoute, {
           from: currentUser._id,
           to: currentChat._id,
         });
         setMessages(response.data);
+        setIsLoadingMessage(false);
       }
       if (currentChat) fetchData();
     },
@@ -163,17 +166,30 @@ export default function ChatContainerRoom({ currentUser, socket }) {
         </ButtonGroupStyled>
       </HeaderStyled>
       <MessageListStyled>
-        {messages.map((mes, index) => (
-          <div ref={scrollRef} key={index}>
-            <Message
-              text={mes.message}
-              photoURL={mes.photoURL}
-              displayName={mes.displayName}
-              createdAt={mes.createdAt}
-              currentName={currentUser.username}
-            />
-          </div>
-        ))}
+        {isLoadingMessage ? (
+          <Spin
+            size="large"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        ) : (
+          messages.map((mes, index) => (
+            <div ref={scrollRef} key={index}>
+              <Message
+                text={mes.message}
+                photoURL={mes.photoURL}
+                displayName={mes.displayName}
+                createdAt={mes.createdAt}
+                currentName={currentUser.username}
+              />
+            </div>
+          ))
+        )}
       </MessageListStyled>
       <ChatInput handleSendMsg={handleSendMsg} />
     </Container>

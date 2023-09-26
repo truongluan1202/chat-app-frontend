@@ -140,7 +140,7 @@ const Container = styled.div`
       display: flex;
       gap: 1rem;
       align-items: center;
-      transition: 0.5s ease-in-out;
+      transition: 0.3s ease-in-out;
       .avatar {
         img {
           height: 3rem;
@@ -153,6 +153,9 @@ const Container = styled.div`
           font-size: 0.8rem;
           font-weight: bold;
         }
+      }
+      &:hover {
+        box-shadow: 0 0 1rem rgba(255, 255, 255, 0.7);
       }
     }
     .selected {
@@ -196,6 +199,9 @@ const PanelStyled = styled(Panel)`
       font-size: 1rem;
       font-weight: bold;
       align-items: center;
+      &:hover {
+        color: #9a86f3;
+      }
     }
 
     .ant-collapse-content-box {

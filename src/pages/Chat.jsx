@@ -35,7 +35,7 @@ function Chat() {
 
   useEffect(() => {
     if (!localStorage.getItem("chat-app-user")) {
-      navigate("/login");
+      // navigate("/login");
     } else {
       setCurrentUser(JSON.parse(localStorage.getItem("chat-app-user")));
     }

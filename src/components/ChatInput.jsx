@@ -125,14 +125,18 @@ const Container = styled.div`
     button {
       padding: 0.3rem 2rem;
       border-radius: 2rem;
+      border: none;
       display: flex;
       justify-content: center;
       align-items: center;
       background-color: #9a86f3;
-      border: none;
+      cursor: pointer;
       svg {
         font-size: 2rem;
         color: white;
+      }
+      &:hover {
+        box-shadow: 0 0 1rem rgba(255, 255, 255, 0.7);
       }
     }
   }
