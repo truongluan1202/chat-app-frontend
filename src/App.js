@@ -13,19 +13,19 @@ const Room = lazy(() => import("./pages/Room"));
 export default function App() {
   return (
     <BrowserRouter>
-      {/* <Suspense fallback={<></>}> */}
-      <AppProvider>
-        <Routes>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/setAvatar" element={<SetAvatar />}></Route>
-          <Route path="/" element={<Chat />}></Route>
-          <Route path="/room" element={<Room />}></Route>
-        </Routes>
-        <AddRoomModal />
-        <InviteMemberModal />
-      </AppProvider>
-      {/* </Suspense> */}
+      <Suspense fallback={<>Loading</>}>
+        <AppProvider>
+          <Routes>
+            <Route path="/register" element={<Register />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/setAvatar" element={<SetAvatar />}></Route>
+            <Route path="/" element={<Chat />}></Route>
+            <Route path="/room" element={<Room />}></Route>
+          </Routes>
+          <AddRoomModal />
+          <InviteMemberModal />
+        </AppProvider>
+      </Suspense>
     </BrowserRouter>
   );
 }
