@@ -34,14 +34,11 @@ function Chat() {
   const { currentUser, setCurrentUser } = useContext(AppContext);
 
   useEffect(() => {
-    window.location.reload();
-  }, []);
-
-  useEffect(() => {
     async function fetchData() {
       try {
         if (!localStorage.getItem("chat-app-user")) {
           navigate("/login");
+          window.location.reload();
         } else {
           setCurrentUser(JSON.parse(localStorage.getItem("chat-app-user")));
         }

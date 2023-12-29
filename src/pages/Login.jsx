@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { loginRoute } from "../utils/APIRoutes";
 
-function Login() {
+export default function Login() {
   const navigate = useNavigate();
   const [values, setValues] = useState({
     username: "",
@@ -22,16 +22,16 @@ function Login() {
     draggable: true,
     theme: "dark",
   };
-  console.log("here3");
+
+  console.log("login");
+
   useEffect(() => {
-    console.log("here");
     if (localStorage.getItem("chat-app-user")) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const handleValidation = () => {
-    console.log("here1");
     const { username, password } = values;
     if (username === "" || password === "") {
       toast.error("Email and Password is required.", toastOptions);
@@ -164,5 +164,3 @@ const FormContainer = styled.div`
     }
   }
 `;
-
-export default Login;
