@@ -34,9 +34,11 @@ function Chat() {
   const { currentUser, setCurrentUser } = useContext(AppContext);
 
   useEffect(() => {
-    if (!window.location.hash) {
-      window.location = window.location + "#loaded";
+    if (!sessionStorage.getItem("chat-refreshed")) {
+      sessionStorage.setItem("chat-refreshed", "true");
       window.location.reload();
+    } else {
+      sessionStorage.removeItem("chat-refreshed");
     }
   }, []);
 
