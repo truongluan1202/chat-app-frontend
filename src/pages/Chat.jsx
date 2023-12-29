@@ -34,12 +34,26 @@ function Chat() {
   const { currentUser, setCurrentUser } = useContext(AppContext);
 
   useEffect(() => {
-    if (!localStorage.getItem("chat-app-user")) {
-      navigate("/login");
-    } else {
-      setCurrentUser(JSON.parse(localStorage.getItem("chat-app-user")));
+    if (!window.location.hash) {
+      window.location = window.location + "#loaded";
+      window.location.reload();
     }
   }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (!localStorage.getItem("chat-app-user")) {
+          navigate("/login");
+        } else {
+          setCurrentUser(JSON.parse(localStorage.getItem("chat-app-user")));
+        }
+      } catch (err) {
+        console.error("Navigation error:", err);
+      }
+    }
+    fetchData();
+  }, [navigate, setCurrentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -60,7 +74,7 @@ function Chat() {
       }
     };
     fetchData();
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);

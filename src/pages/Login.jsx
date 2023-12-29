@@ -22,14 +22,16 @@ function Login() {
     draggable: true,
     theme: "dark",
   };
-
+  console.log("here3");
   useEffect(() => {
+    console.log("here");
     if (localStorage.getItem("chat-app-user")) {
       navigate("/");
     }
   }, []);
 
   const handleValidation = () => {
+    console.log("here1");
     const { username, password } = values;
     if (username === "" || password === "") {
       toast.error("Email and Password is required.", toastOptions);
